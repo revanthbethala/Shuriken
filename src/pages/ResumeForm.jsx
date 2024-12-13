@@ -1,69 +1,148 @@
-/* eslint-disable react/prop-types */
+import React, { useState } from "react";
 
-const ResumeForm = ({
-   formData,
-   handleChange,
-   addEducation,
-   removeEducation,
-   addExperience,
-   removeExperience
-}) => {
+const ResumeForm = ({ handleFormChange }) => {
+   const [formData, setFormData] = useState({
+      name: '',
+      email: '',
+      phone: '',
+      github: '',
+      linkedin: '',
+      portfolio: '',
+      education: [{ degree: '', duration: '', percentage: '' }],
+      experience: [{ role: '', duration: '', details: '' }],
+      projects: [{ title: '', description: '' }],
+      skills: [],
+      certifications: [{ title: '', issuedBy: '', date: '' }],
+      languages: [],
+      achievements: '',
+      extraCurricular: ''
+   });
+
+   const handleChange = (e, section, index) => {
+      const { name, value } = e.target;
+      const updatedData = { ...formData };
+
+      if (section === 'personal') {
+         updatedData[name] = value;
+      } else if (section === 'education') {
+         updatedData.education[index][name] = value;
+      } else if (section === 'experience') {
+         updatedData.experience[index][name] = value;
+      } else if (section === 'projects') {
+         updatedData.projects[index][name] = value;
+      } else if (section === 'certifications') {
+         updatedData.certifications[index][name] = value;
+      } else if (section === 'skills') {
+         updatedData.skills = value.split(",").map(skill => skill.trim());
+      } else if (section === 'languages') {
+         updatedData.languages = value.split(",").map(lang => lang.trim());
+      }
+
+      setFormData(updatedData);
+      handleFormChange(updatedData); // Pass changes back to parent
+   };
+
+   const addItem = (section) => {
+      const newItem = {
+         education: { degree: '', duration: '', percentage: '' },
+         experience: { role: '', duration: '', details: '' },
+         projects: { title: '', description: '' },
+         certifications: { title: '', issuedBy: '', date: '' },
+      }[section];
+      setFormData((prevData) => ({
+         ...prevData,
+         [section]: [...prevData[section], newItem]
+      }));
+   };
+
+   const removeItem = (section, index) => {
+      setFormData((prevData) => ({
+         ...prevData,
+         [section]: prevData[section].filter((_, i) => i !== index)
+      }));
+   };
+
    return (
-      <form className="space-y-6 flex flex-col items-start">
+      <div className="w-full max-w-xl p-6 bg-gray-50 shadow-md rounded-lg">
+         <h2 className="text-2xl font-semibold mb-6">Create Your Resume</h2>
+
          {/* Personal Information */}
-         <div className="space-y-3">
-            <h2 className="text-2xl font-semibold">Personal Information</h2>
+         <div className="mb-6">
+            <label className="block text-gray-700 mb-1">Full Name</label>
             <input
                type="text"
                name="name"
                placeholder="Full Name"
                value={formData.name}
-               onChange={(e) => handleChange(e, 'personal', 0)}
-               className="w-full px-4 py-2 border rounded-md"
+               onChange={(e) => handleChange(e, 'personal')}
+               className="w-full px-4 py-2 border rounded-md mb-4"
             />
+            <label className="block text-gray-700 mb-1">Email</label>
             <input
                type="email"
                name="email"
                placeholder="Email"
                value={formData.email}
-               onChange={(e) => handleChange(e, 'personal', 0)}
-               className="w-full px-4 py-2 border rounded-md"
+               onChange={(e) => handleChange(e, 'personal')}
+               className="w-full px-4 py-2 border rounded-md mb-4"
             />
+            <label className="block text-gray-700 mb-1">Phone</label>
             <input
                type="text"
                name="phone"
                placeholder="Phone"
                value={formData.phone}
-               onChange={(e) => handleChange(e, 'personal', 0)}
+               onChange={(e) => handleChange(e, 'personal')}
                className="w-full px-4 py-2 border rounded-md"
             />
          </div>
 
-         {/* Education */}
-         <div className="space-y-3">
-            <h2 className="text-2xl font-semibold">Education</h2>
+         {/* Links */}
+         <div className="mb-6">
+            <label className="block text-gray-700 mb-1">GitHub URL</label>
+            <input
+               type="url"
+               name="github"
+               placeholder="GitHub URL"
+               value={formData.github}
+               onChange={(e) => handleChange(e, 'personal')}
+               className="w-full px-4 py-2 border rounded-md mb-4"
+            />
+            <label className="block text-gray-700 mb-1">LinkedIn URL</label>
+            <input
+               type="url"
+               name="linkedin"
+               placeholder="LinkedIn URL"
+               value={formData.linkedin}
+               onChange={(e) => handleChange(e, 'personal')}
+               className="w-full px-4 py-2 border rounded-md mb-4"
+            />
+            <label className="block text-gray-700 mb-1">Portfolio URL</label>
+            <input
+               type="url"
+               name="portfolio"
+               placeholder="Portfolio URL"
+               value={formData.portfolio}
+               onChange={(e) => handleChange(e, 'personal')}
+               className="w-full px-4 py-2 border rounded-md"
+            />
+         </div>
+
+         {/* Education Section */}
+         <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Education</h3>
             {formData.education.map((edu, index) => (
-               <div key={index} className="space-y-1">
-                  <div className="flex justify-between">
-                     <label className="font-medium">Degree / Course</label>
-                     {index > 0 && (
-                        <button
-                           type="button"
-                           onClick={() => removeEducation(index)}
-                           className="text-red-500 hover:underline"
-                        >
-                           Remove
-                        </button>
-                     )}
-                  </div>
+               <div key={index} className="space-y-3">
+                  <label className="block text-gray-700 mb-1">Degree</label>
                   <input
                      type="text"
                      name="degree"
-                     placeholder="Degree / Course"
+                     placeholder="Degree"
                      value={edu.degree}
                      onChange={(e) => handleChange(e, 'education', index)}
                      className="w-full px-4 py-2 border rounded-md"
                   />
+                  <label className="block text-gray-700 mb-1">Duration</label>
                   <input
                      type="text"
                      name="duration"
@@ -72,6 +151,7 @@ const ResumeForm = ({
                      onChange={(e) => handleChange(e, 'education', index)}
                      className="w-full px-4 py-2 border rounded-md"
                   />
+                  <label className="block text-gray-700 mb-1">Percentage/CGPA</label>
                   <input
                      type="text"
                      name="percentage"
@@ -80,82 +160,55 @@ const ResumeForm = ({
                      onChange={(e) => handleChange(e, 'education', index)}
                      className="w-full px-4 py-2 border rounded-md"
                   />
+                  {index > 0 && (
+                     <button
+                        type="button"
+                        onClick={() => removeItem('education', index)}
+                        className="text-red-500 hover:underline"
+                     >
+                        Remove Education
+                     </button>
+                  )}
                </div>
             ))}
             <button
                type="button"
-               onClick={addEducation}
+               onClick={() => addItem('education')}
                className="text-blue-500 hover:underline"
             >
                Add More Education
             </button>
          </div>
 
-         {/* Experience */}
-         <div className="space-y-3">
-            <h2 className="text-2xl font-semibold">Experience</h2>
-            {formData.experience.map((exp, index) => (
-               <div key={index} className="space-y-1">
-                  <div className="flex justify-between">
-                     <label className="font-medium">Role</label>
-                     {index > 0 && (
-                        <button
-                           type="button"
-                           onClick={() => removeExperience(index)}
-                           className="text-red-500 hover:underline"
-                        >
-                           Remove
-                        </button>
-                     )}
-                  </div>
-                  <input
-                     type="text"
-                     name="role"
-                     placeholder="Role"
-                     value={exp.role}
-                     onChange={(e) => handleChange(e, 'experience', index)}
-                     className="w-full px-4 py-2 border rounded-md"
-                  />
-                  <input
-                     type="text"
-                     name="duration"
-                     placeholder="Duration (e.g., Jan 2021 - Dec 2023)"
-                     value={exp.duration}
-                     onChange={(e) => handleChange(e, 'experience', index)}
-                     className="w-full px-4 py-2 border rounded-md"
-                  />
-                  <textarea
-                     name="details"
-                     placeholder="Experience Details"
-                     value={exp.details}
-                     onChange={(e) => handleChange(e, 'experience', index)}
-                     className="w-full px-4 py-2 border rounded-md"
-                     rows="4"
-                  />
-               </div>
-            ))}
-            <button
-               type="button"
-               onClick={addExperience}
-               className="text-blue-500 hover:underline"
-            >
-               Add More Experience
-            </button>
+         {/* Repeat for other sections like Experience, Projects, Skills, etc. */}
+         {/* Skills Section */}
+         <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Skills</h3>
+            <label className="block text-gray-700 mb-1">List your skills (comma-separated)</label>
+            <input
+               type="text"
+               name="skills"
+               placeholder="e.g., JavaScript, React, Node.js"
+               value={formData.skills.join(", ")}
+               onChange={(e) => handleChange(e, 'skills')}
+               className="w-full px-4 py-2 border rounded-md"
+            />
          </div>
 
-         {/* Other Sections */}
-         {/* You can add similar sections for skills, achievements, etc. */}
-
-         {/* Submit Button */}
-         <div className="flex justify-end mt-6">
-            <button
-               type="submit"
-               className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-colors"
-            >
-               Submit Resume
-            </button>
+         {/* Languages Section */}
+         <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Languages</h3>
+            <label className="block text-gray-700 mb-1">List languages (comma-separated)</label>
+            <input
+               type="text"
+               name="languages"
+               placeholder="e.g., English, Spanish, French"
+               value={formData.languages.join(", ")}
+               onChange={(e) => handleChange(e, 'languages')}
+               className="w-full px-4 py-2 border rounded-md"
+            />
          </div>
-      </form>
+      </div>
    );
 };
 

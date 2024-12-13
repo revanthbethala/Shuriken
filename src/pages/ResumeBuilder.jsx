@@ -1,82 +1,42 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import ResumeForm from './ResumeForm';
+import React, { useState } from "react";
+import ResumeForm from "./ResumeForm"; // Assuming this is your form component
+import ResumePreview from "./ResumePreview"; // Assuming this is your preview component
 
 const ResumeBuilder = () => {
    const [formData, setFormData] = useState({
       name: '',
       email: '',
       phone: '',
-      skills: '',
-      achievements: '',
-      extraCurricular: '',
-      projects: '',
       github: '',
       linkedin: '',
       portfolio: '',
-      education: [{ degree: '', duration: '', percentage: '' }],
-      experience: [{ role: '', duration: '', details: '' }]
+      education: [{ degree: '', duration: '', percentage: '', place: '' }],
+      experience: [{ role: '', duration: '', details: '', place: '' }],
+      projects: [{ title: '', description: '' }],
+      skills: [],
+      certifications: [{ title: '', issuedBy: '', date: '' }],
+      languages: [],
+      achievements: '',
+      extraCurricular: ''
    });
 
-   const handleChange = (e, section, index) => {
-      const { name, value } = e.target;
-      const updatedSection = [...formData[section]];
-      updatedSection[index] = { ...updatedSection[index], [name]: value };
-      setFormData((prevData) => ({
-         ...prevData,
-         [section]: updatedSection
-      }));
-   };
-
-   const addEducation = () => {
-      setFormData((prevData) => ({
-         ...prevData,
-         education: [...prevData.education, { degree: '', duration: '', percentage: '' }]
-      }));
-   };
-
-   const removeEducation = (index) => {
-      const updatedEducation = formData.education.filter((_, i) => i !== index);
-      setFormData((prevData) => ({
-         ...prevData,
-         education: updatedEducation
-      }));
-   };
-
-   const addExperience = () => {
-      setFormData((prevData) => ({
-         ...prevData,
-         experience: [...prevData.experience, { role: '', duration: '', details: '' }]
-      }));
-   };
-
-   const removeExperience = (index) => {
-      const updatedExperience = formData.experience.filter((_, i) => i !== index);
-      setFormData((prevData) => ({
-         ...prevData,
-         experience: updatedExperience
-      }));
+   // Update form data when changes are made
+   const handleFormChange = (updatedData) => {
+      setFormData(updatedData);
    };
 
    return (
-      <motion.div
-         initial={{ opacity: 0 }}
-         animate={{ opacity: 1 }}
-         transition={{ duration: 0.5 }}
-         className="mx-auto p-6 bg-gray-50 shadow-lg rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6"
-      >
-         <div>
-            <h1 className="text-3xl font-bold text-center mb-6">Resume Builder</h1>
-            <ResumeForm
-               formData={formData}
-               handleChange={handleChange}
-               addEducation={addEducation}
-               removeEducation={removeEducation}
-               addExperience={addExperience}
-               removeExperience={removeExperience}
-            />
+      <div className="flex flex-col lg:flex-row gap-8">
+         {/* Form Section */}
+         <div className="w-full lg:w-1/2 bg-gray-100 p-4 rounded-md shadow-md">
+            <ResumeForm handleFormChange={handleFormChange} />
          </div>
-      </motion.div>
+
+         {/* Preview Section */}
+         <div className="w-full lg:w-1/2 bg-gray-50 p-4 rounded-md shadow-md">
+            <ResumePreview formData={formData} />
+         </div>
+      </div>
    );
 };
 
