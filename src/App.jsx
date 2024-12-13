@@ -1,23 +1,17 @@
-import Header from "./pages/Header"
-import Hero from "./pages/Hero"
-import CourseCards from "./pages/CourseCards"
-import AboutMe from "./pages/About"
-import Footer from "./pages/Footer"
-import Connections from "./pages/Connections"
-import HowItWorks from "./pages/HowItWorks"
+import { Route, Routes } from 'react-router-dom';
+import DashBoard from "./pages/DashBoard";
+import ResumeBuilder from "./pages/ResumeBuilder";
 
 function App() {
   return (
-    <div >
-      <Header />
-      <Hero />
-      <CourseCards />
-      <Connections />
-      <HowItWorks />
-      <AboutMe />
-      <Footer />
+    <div>
+      <Routes>
+        <Route path="/" element={<DashBoard />} />
+
+        <Route path="/resume" element={<ResumeBuilder />} />
+      </Routes>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

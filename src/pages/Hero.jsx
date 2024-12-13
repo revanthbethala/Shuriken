@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { homeImg } from "../data";
+import { NavLink } from 'react-router-dom';
 
 const Hero = () => {
    return (
@@ -33,6 +34,15 @@ const Hero = () => {
                   >
                      View Courses
                   </motion.button>
+                  <NavLink to="/resume">
+                     <motion.button
+                        className="px-4 py-3 text-base text-center font-semibold bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ type: 'spring', stiffness: 300 }}
+                     >
+                        Create Resume
+                     </motion.button>
+                  </NavLink>
                </div>
             </div>
          </motion.div>
